@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Account {
+  id        String     @id
+  name      String
+  segment   String?
+  deals     Deal[]
+  activities Activity[]
+}
+
+model Rep {
+  id    String @id
+  name  String
+  deals Deal[]
+}
+
+model Deal {
+  id          String    @id
+  accountId  String
+  repId      String
+  name       String?
+  amount     Float
+  status     String
+  createdDate String
+  closeDate  String?
+  account    Account   @relation(fields: [accountId], references: [id])
+  rep        Rep       @relation(fields: [repId], references: [id])
+}
+
+model Activity {
+  id        String   @id
+  accountId String
+  date      String
+  type      String?
+  account   Account  @relation(fields: [accountId], references: [id])
+}
+
+model Target {
+  id      String @id
+  quarter String
+  value   Float
+}

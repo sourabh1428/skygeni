@@ -1,0 +1,386 @@
+# PRODUCT REQUIREMENTS DOCUMENT (PRD)
+
+## Revenue Intelligence Console
+
+---
+
+## 1. Product Overview
+
+Build a **single-page Revenue Intelligence Console** that helps a CRO answer:
+
+> “Why are we behind (or ahead) on revenue this quarter, and what should we focus on right now?”
+
+The system must process sales data from multiple datasets and expose analytics via backend APIs and a React dashboard.
+
+This project is an engineering assignment focused on:
+
+* analytical thinking
+* backend data reasoning
+* clean architecture
+* actionable insights
+
+Reference requirements come from the assignment specification. 
+
+---
+
+## 2. Core Goal
+
+Create a full-stack application that:
+
+1. Aggregates sales data
+2. Calculates revenue performance metrics
+3. Identifies risks
+4. Generates recommendations
+5. Displays insights in a clear dashboard
+
+---
+
+## 3. Tech Stack (MANDATORY)
+
+### Frontend
+
+* React
+* TypeScript
+* Material UI (MUI)
+* D3.js for charts
+* Vite (preferred)
+
+### Backend
+
+* Node.js
+* Express
+* TypeScript
+
+### Database
+
+* SQLite (via Prisma ORM)
+
+Reason:
+
+* Fast setup
+* SQL support
+* Reliable analytical queries
+
+---
+
+## 4. Project Structure
+
+```
+root/
+  backend/
+  frontend/
+  data/
+  THINKING.md
+  README.md
+```
+
+### Backend Structure
+
+```
+backend/src/
+  routes/
+  controllers/
+  services/
+  utils/
+  prisma/
+  index.ts
+```
+
+### Frontend Structure
+
+```
+frontend/src/
+  components/
+  pages/
+  charts/
+  api/
+  hooks/
+```
+
+---
+
+## 5. Data Sources
+
+Input JSON files (from /data folder):
+
+* accounts.json
+* reps.json
+* deals.json
+* activities.json
+* targets.json
+
+Data may contain inconsistencies and missing values.
+
+Backend must:
+
+* load and normalize data
+* handle missing references safely
+
+---
+
+## 6. Functional Requirements (Backend APIs)
+
+### 6.1 Summary API
+
+**Endpoint:**
+`GET /api/summary`
+
+Return:
+
+```
+{
+  currentQuarterRevenue,
+  targetRevenue,
+  gapPercent,
+  changeVsPreviousQuarter
+}
+```
+
+Logic:
+
+* determine current quarter dynamically
+* sum closed-won deals
+* compare against targets
+* compute % gap and QoQ change
+
+---
+
+### 6.2 Revenue Drivers API
+
+**Endpoint:**
+`GET /api/drivers`
+
+Return:
+
+```
+{
+  pipelineSize,
+  winRate,
+  averageDealSize,
+  salesCycleTime
+}
+```
+
+Definitions:
+
+* Pipeline size = open deal value total
+* Win rate = won / closed deals
+* Avg deal size = revenue / won deals
+* Sales cycle = avg days from creation to close
+
+---
+
+### 6.3 Risk Factors API
+
+**Endpoint:**
+`GET /api/risk-factors`
+
+Return:
+
+```
+{
+  staleDeals: [],
+  underperformingReps: [],
+  lowActivityAccounts: []
+}
+```
+
+Rules:
+
+* Stale deal → open > 30 days
+* Underperforming rep → win rate below team average
+* Low activity account → no activity in last 14 days
+
+---
+
+### 6.4 Recommendations API
+
+**Endpoint:**
+`GET /api/recommendations`
+
+Return array:
+
+```
+[
+  "Focus on Enterprise deals older than 30 days",
+  "Coach Rep A on win rate",
+  "Increase activity for Segment B"
+]
+```
+
+Rules:
+
+* Generate 3–5 actionable suggestions
+* Use risk + drivers analysis
+* Recommendations must be human-readable
+
+---
+
+## 7. Backend Architecture Rules
+
+### Separation of concerns
+
+* Routes → API mapping
+* Controllers → request/response
+* Services → business logic
+* Utils → helper functions
+
+Example:
+
+```
+routes/summary.ts
+controllers/summary.controller.ts
+services/summary.service.ts
+```
+
+---
+
+## 8. Frontend Requirements
+
+Single page dashboard.
+
+### Layout sections:
+
+1. Summary Cards
+
+   * Revenue
+   * Target
+   * Gap
+   * QoQ change
+
+2. Revenue Charts (D3)
+
+   * Revenue trend line
+   * Pipeline vs target bar chart
+
+3. Drivers Section
+
+   * KPI cards or visual stats
+
+4. Risk Factors Table
+
+   * Stale deals
+   * Reps
+   * Accounts
+
+5. Recommendations Panel
+
+   * Bullet list or cards
+
+---
+
+## 9. UI Rules
+
+* Use Material UI components only
+* Clean enterprise dashboard style
+* Desktop-first layout
+* Responsive where reasonable
+
+---
+
+## 10. State & API Handling
+
+Use:
+
+* React hooks
+* API layer using Axios
+* Optional: React Query
+
+All data loaded from backend APIs only.
+
+No direct JSON usage in frontend.
+
+---
+
+## 11. Data Processing Rules
+
+Backend must:
+
+* normalize dates
+* handle null values safely
+* avoid crashes on missing fields
+* use defensive coding
+
+---
+
+## 12. Performance & Scalability Assumptions
+
+Current scope:
+
+* small dataset (1 year)
+
+Future scaling notes:
+
+* move analytics to SQL aggregation
+* cache heavy queries
+* precompute metrics
+* async background jobs
+
+---
+
+## 13. THINKING.md (CRITICAL)
+
+Must include:
+
+1. Assumptions made
+2. Data issues found
+3. Tradeoffs chosen
+4. What breaks at 10x scale
+5. What AI generated vs human decisions
+
+This document is equal importance to code.
+
+---
+
+## 14. Definition of Done
+
+Project is complete when:
+
+* All required APIs exist and work
+* Dashboard displays real computed metrics
+* D3 charts render successfully
+* Risks and recommendations are meaningful
+* THINKING.md is written
+* Repository structure matches spec
+
+---
+
+## 15. Non-Goals
+
+Do NOT implement:
+
+* Authentication
+* User management
+* Real-time updates
+* Complex styling systems
+* Microservices
+
+---
+
+## 16. Engineering Quality Expectations
+
+Code must show:
+
+* clean folder structure
+* reusable functions
+* clear naming
+* typed interfaces
+* no business logic in UI components
+
+---
+
+## 17. Priority Order (Implementation Guide)
+
+1. Setup backend
+2. Import data
+3. Implement APIs
+4. Build basic dashboard layout
+5. Integrate APIs
+6. Add D3 charts
+7. Add risk & recommendations
+8. Write THINKING.md
+9. Final cleanup
+
+---
+
+## END OF PRD

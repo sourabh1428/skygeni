@@ -1,0 +1,27 @@
+# Revenue Intelligence Console – Render Blueprint
+# 1. Connect repo and add Blueprint in Render Dashboard.
+# 2. Deploy backend first; note its URL (e.g. https://revenue-intelligence-api.onrender.com).
+# 3. In the frontend service, set env var VITE_API_URL to that backend URL, then deploy frontend.
+
+services:
+  - type: web
+    name: revenue-intelligence-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install && npx prisma generate && npm run build
+    preDeployCommand: npx prisma migrate deploy
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+    healthCheckPath: /api/health
+
+  - type: web
+    name: revenue-intelligence-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false
