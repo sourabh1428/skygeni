@@ -9,7 +9,7 @@ services:
     runtime: node
     rootDir: backend
     buildCommand: npm install && npx prisma generate && npm run build
-    startCommand: npx prisma migrate deploy && npm start
+    startCommand: npx prisma migrate deploy && node dist/prisma/seed.js && npm start
     envVars:
       - key: NODE_ENV
         value: production

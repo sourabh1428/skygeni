@@ -1,8 +1,10 @@
+import { Analytics } from '@vercel/analytics/react';
 import Dashboard from '@/pages/Dashboard';
 
 function App() {
   return (
     <div className="min-h-screen bg-background font-sans">
+      <Analytics />
       <header className="sticky top-0 z-50 flex h-14 items-center justify-between border-b border-border bg-card px-6 shadow-sm">
         <div className="flex items-center gap-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
